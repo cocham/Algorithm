@@ -7,10 +7,10 @@ public class Main{
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         
         String[] arr = br.readLine().split(" ");
-        int A = Integer.parseInt(arr[0]);
-        int B = Integer.parseInt(arr[1]);
+        long A = Long.parseLong(arr[0]);
+        long B = Long.parseLong(arr[1]);
         
-        bw.write(Integer.toString((A + B) * (A - B)));
+        bw.write(Long.toString((A + B) * (A - B)));
         bw.flush();
         bw.close();
         br.close();
