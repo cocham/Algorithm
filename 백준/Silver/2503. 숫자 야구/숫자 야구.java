@@ -2,19 +2,29 @@ import java.io.*;
 import java.util.*;
 
 public class Main{
+    static class Info{
+        int s, b;
+        String num;
+        public Info(String num, int s, int b){
+            this.num = num;
+            this.s = s;
+            this.b = b;
+        }
+    }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         
+        
         int answer = 0;
-        List<int[]> list = new ArrayList<>();
+        ArrayList<Info> game = new ArrayList<>();
         int ncase = Integer.parseInt(br.readLine());
         for (int i = 0; i < ncase; i++){
             String[] line = br.readLine().split(" ");
-            int N = Integer.parseInt(line[0]);
+            String N = line[0];
             int S = Integer.parseInt(line[1]);
             int B = Integer.parseInt(line[2]);
-            list.add(new int[] {N, S, B});
+            game.add(new Info(N,S,B));
         }
         
         for (int i = 1; i <= 9; i++){
@@ -24,7 +34,7 @@ public class Main{
                     if (k == i || k == j) continue;
                     
                     String cand = "" + i + j + k;
-                    if (numCheck(cand, list)) answer++;
+                    if (numCheck(cand, game)) answer++;
                 }
             }
         }
@@ -35,12 +45,13 @@ public class Main{
         br.close();
     }
     
-    static boolean numCheck(String num, List<int[]> list){
-        for (int[] hint : list){
-            String guess = Integer.toString(hint[0]);
+    static boolean numCheck(String num, List<Info> game){
+        for (Info hint : game){
+            String guess = hint.num;
+            int strike = hint.s;
+            int ball = hint.b;
             int s = 0, b = 0;
-            int strike = hint[1];
-            int ball = hint[2];
+
             for (int idx = 0; idx < 3; idx++){
                 if(num.charAt(idx) == guess.charAt(idx)){
                     s++;
