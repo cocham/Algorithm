@@ -7,21 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
+    private static final Map<String, Integer> SCORE_TABLE = Map.of(
+        "miss", 0,
+        "bad", 200,
+        "cool", 400,
+        "great", 600,
+        "perfect", 1000
+    );
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        
-        Map<String, Integer> hashMap = new HashMap<>();
-        hashMap.put("miss", 0);
-        hashMap.put("bad", 200);
-        hashMap.put("cool", 400);
-        hashMap.put("great", 600);
-        hashMap.put("perfect", 1000);
-        
-        int lv = Integer.parseInt(st.nextToken());
+
+        int level = Integer.parseInt(st.nextToken());
         String verdict = st.nextToken();
         
-        System.out.println(lv * hashMap.get(verdict));
+        int score = SCORE_TABLE.get(verdict);
+        System.out.println(level * score);
         
     }
 }
