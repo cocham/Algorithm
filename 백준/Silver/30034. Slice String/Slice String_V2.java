@@ -45,10 +45,6 @@ public class Main {
             }
         }
         
-        if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
-            sb.append('\n');
-        }
-        
         System.out.print(sb);
     }
 }
