@@ -14,7 +14,7 @@ public class Main {
             if (score.equals("100")) {
                 allScore += 100;
             } else {
-                score = score.replaceAll("[069]", "9");
+                score = score.replaceAll("[06]", "9");
                 allScore += Long.parseLong(score);
             }
         }
