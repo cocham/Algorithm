@@ -27,6 +27,7 @@ public class Main {
                 int value = entry.getValue();
                 if (value > max) {
                     idx = entry.getKey();
+                    break;
                 }
             }
             if (idx != -1) {
