@@ -15,22 +15,24 @@ public class Main {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int t = Integer.parseInt(st.nextToken());
             
+            int max = t / 2;
             Map<Long, Integer> soldiers = new HashMap<>();
+            
+            boolean found = false;
+            long idx = -1;
+
             for (int j = 0; j < t; j++) {
                 long soldier = Long.parseLong(st.nextToken());
-                soldiers.put(soldier, soldiers.getOrDefault(soldier,0) + 1);
-            } 
-
-            int max = t / 2;
-            long idx = -1;
-            for (Map.Entry<Long, Integer> entry : soldiers.entrySet()) {
-                int value = entry.getValue();
-                if (value > max) {
-                    idx = entry.getKey();
+                int cnt = soldiers.getOrDefault(soldier,0) + 1;
+                soldiers.put(soldier, cnt);
+                if (cnt > max) {
+                    idx = soldier;
+                    found = true;
                     break;
                 }
-            }
-            if (idx != -1) {
+            } 
+            
+            if (found) {
                 sb.append(idx).append('\n');
             } else {
                 sb.append("SYJKGW").append('\n');
