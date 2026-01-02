@@ -1,29 +1,28 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.Stack;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Stack<Integer> moneys = new Stack<>();
         int k = Integer.parseInt(br.readLine());
         
+        Deque<Integer> queue = new ArrayDeque<>();
         for (int i = 0; i < k; i++) {
             int n = Integer.parseInt(br.readLine());
             if (n == 0) {
-                moneys.pop();
-            }
-            else {
-                moneys.add(n); 
+                queue.pollLast();
+            } else {
+                queue.addLast(n);
             }
         }
         
-        long sum = 0;
-        for (Integer n : moneys) {
-            sum += n;
-        }
+        int qSum = queue.stream()
+            .mapToInt(Integer::intValue)
+            .sum();
         
-        System.out.print(sum);
+        System.out.println(qSum);
     }
 }
