@@ -1,89 +1,89 @@
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Deque;
-import java.util.StringTokenizer;
+import java.util.Queue;
 
 public class Main {
+    static int[] dx = {0,0,1,-1};
+    static int[] dy = {1,-1,0,0};
     static int[][] arr;
-    static boolean[][] check;
-    static int[] xAxis = {-1, 1, 0, 0};
-    static int[] yAxis = {0, 0, -1, 1};
-    static int n;
-    static StringBuilder sb = new StringBuilder();
+    static int N;
+    static boolean[][] visited;
     
     static class Position {
-        int row;
-        int col;
+        int x;
+        int y;
         
-        Position (int row, int col) {
-            this.row = row;
-            this.col = col;
+        Position(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
+        N = Integer.parseInt(br.readLine());
+        arr = new int[N][N];
+        visited = new boolean[N][N];
         
-        arr = new int[n + 1][n + 1];
-        check = new boolean[n + 1][n + 1];
-        
-        for (int i = 1; i <= n; i++) {
-            String s = br.readLine();
-            for (int j = 1; j <= n; j++) {
-                arr[i][j] = s.charAt(j - 1) - '0';
+        for (int i = 0; i < N; i++) {
+            String[] line = br.readLine().split("");
+            for (int j = 0; j < N; j++) {
+                arr[i][j] = Integer.parseInt(line[j]);
             }
         }
         
-        int cnt = 0;
-        List<Integer> houseResult = new ArrayList<>();
-        
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (arr[i][j] == 1 && !check[i][j]) {
-                    int houses = bfs(i,j);
-                    houseResult.add(houses);
-                    cnt++;
+        int groupCnt = 0;
+        List<Integer> houseCnts = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (arr[i][j] == 1 && !visited[i][j]) {
+                    visited[i][j] = true;
+                    int houseCnt = bfs(i,j);
+                    groupCnt++;
+                    houseCnts.add(houseCnt);
                 }
             }
         }
         
-        Collections.sort(houseResult);
-        System.out.println(cnt);
-        for (int i = 0; i < houseResult.size(); i++) {
-            sb.append(houseResult.get(i)).append('\n');
+        System.out.println(groupCnt);
+        
+        Collections.sort(houseCnts);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < houseCnts.size(); i++) {
+            sb.append(houseCnts.get(i)).append('\n');
         }
+        
         System.out.print(sb);
     }
     
-    static int bfs(int i, int j) {
-        check[i][j] = true;
-        Deque<Position> q = new ArrayDeque<>();
-        q.add(new Position(i, j));
-        int cnt = 0;
-        
-        while (!q.isEmpty()) {
-            Position pos = q.poll();
-            cnt++;
-
-            for (int idx = 0; idx < 4; idx++) {
-                int moveX = pos.row + xAxis[idx];
-                int moveY = pos.col + yAxis[idx];
+    static int bfs(int x, int y) {
+        Position pos = new Position(x,y);
+        Queue<Position> q = new LinkedList<>();
+        q.add(pos);
+        int house = 1;
+        while(!q.isEmpty()) {
+            Position curPos = q.poll();
+            
+            for (int i = 0; i < 4; i++) {
+                int moveX = curPos.x + dx[i];
+                int moveY = curPos.y + dy[i];
                 
-                if (moveX >= 0 && moveX <= n && moveY >= 0 && moveY <= n) {
-                    if (arr[moveX][moveY] == 1 && !check[moveX][moveY]) {
+                if (moveX >= 0 && moveX < N && moveY >= 0 && moveY < N) {
+                    if (arr[moveX][moveY] == 1 && !visited[moveX][moveY]) {
+                        visited[moveX][moveY] = true;
                         q.add(new Position(moveX, moveY));
-                        check[moveX][moveY] = true;
+                        house++;
                     }
                 }
             }
-        } 
+        }
         
-        return cnt;
+        return house;
+        
     }
 }
