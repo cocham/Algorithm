@@ -8,18 +8,10 @@ import java.util.Queue;
 public class Main {
     static int A;
     static int B;
-    static boolean[] visited = new boolean[10000];
+    static int[] history;
+    static char[] orderHistory;
+    static boolean[] visited;
     static StringBuilder sb = new StringBuilder();
-
-    static class Node {
-        int num;
-        String path;
-        
-        Node (int num, String path) {
-            this.num = num;
-            this.path = path;
-        }
-    }
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,52 +19,66 @@ public class Main {
         
         for (int t = 0; t < T; t++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            visited = new boolean[10000];
             A = Integer.parseInt(st.nextToken());
             B = Integer.parseInt(st.nextToken());
-            bfs(A, B);
+            visited = new boolean[10000];
+            history = new int[10000];
+            orderHistory = new char[10000];
+            bfs(A,B);
         }
         
         System.out.print(sb);
     }
     
     static void bfs(int start, int target) {
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
         visited[start] = true;
-        Queue<Node> q = new LinkedList<>();
-        q.add(new Node(start, ""));
         
         while(!q.isEmpty()) {
-            Node curNode = q.poll();
-            int num = curNode.num;
+            int n = q.poll();
             
-            if (num == target) {
-                sb.append(curNode.path).append('\n');
+            if (n == target) {
+                StringBuilder part = new StringBuilder();
+                int idx = n;
+                while (idx != A) {
+                    part.append(orderHistory[idx]);
+                    idx = history[idx];
+                }
+                
+                sb.append(part.reverse().toString()).append('\n');
                 return;
             }
             
-            int nextD = (num * 2) % 10000;
+            int nextD = (n * 2) % 10000;
             if (!visited[nextD]) {
                 visited[nextD] = true;
-                q.add(new Node(nextD, curNode.path + "D"));
+                history[nextD] = n;
+                orderHistory[nextD] = 'D';
+                q.add(nextD);
             }
-              
-            int nextS = (num == 0) ? 9999 : num - 1;
+            int nextS = (n == 0) ? 9999 : n - 1;
             if (!visited[nextS]) {
                 visited[nextS] = true;
-                q.add(new Node(nextS, curNode.path + "S"));
-            }
-            
-            int nextL = (num % 1000 * 10) + (num / 1000);
+                history[nextS] = n;
+                orderHistory[nextS] = 'S';
+                q.add(nextS);
+            }            
+            int nextL = (n % 1000 * 10) + (n / 1000);
             if (!visited[nextL]) {
                 visited[nextL] = true;
-                q.add(new Node(nextL, curNode.path + "L"));
-            }
-            
-            int nextR = (num % 10 * 1000) + (num / 10);
+                history[nextL] = n;
+                orderHistory[nextL] = 'L';
+                q.add(nextL);
+            }  
+            int nextR = (n % 10 * 1000) + (n / 10);
             if (!visited[nextR]) {
                 visited[nextR] = true;
-                q.add(new Node(nextR, curNode.path + "R"));
-            }
+                history[nextR] = n;
+                orderHistory[nextR] = 'R';
+                q.add(nextR);
+            }  
+
         }
     }
 }
