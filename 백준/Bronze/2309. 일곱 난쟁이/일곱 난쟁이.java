@@ -3,52 +3,49 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Main {
-    static int[] dwarfs = new int[9];
 
+public class Main {
+    static int[] sevens = new int[9];
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
         for (int i = 0; i < 9; i++) {
-            int n = Integer.parseInt(br.readLine());
-            dwarfs[i] = n;
+            sevens[i] = Integer.parseInt(br.readLine());
         }
         
+        boolean find = false;
         for (int i = 0; i < 9; i++) {
-            int fakeDwarf1 = dwarfs[i];
-            for (int j = i + 1; j < 9; j++) {
-                int fakeDwarf2 = dwarfs[j];
-                if (judgeDwarfs(i, j, fakeDwarf1, fakeDwarf2)) {
-                    dwarfs[i] = 0;
-                    dwarfs[j] = 0;
-                    break;
-                }
+            if (find) {
+                break;
+            }
+            for(int j = i + 1; j < 9; j++) {               
+                if (check(i, j)) {
+                    find = true;
+                    sevens[i] = 0;
+                    sevens[j] = 0;
+                } 
             }
         }
         
-        Arrays.sort(dwarfs);
+        Arrays.sort(sevens);
         for (int i = 0; i < 9; i++) {
-            if (dwarfs[i] != 0) {
-                System.out.println(dwarfs[i]);
+            if (sevens[i] != 0) {
+                System.out.println(sevens[i]);
             }
         }
     }
     
-    static boolean judgeDwarfs(int i, int j, int fakeDwarf1, int fakeDwarf2) {
-        dwarfs[i] = 0;
-        dwarfs[j] = 0;
-        
-        int cnt = 0;
-        for (int idx = 0; idx < 9; idx++) {
-            cnt += dwarfs[idx];
+    static boolean check(int idx, int jdx) {
+        int checkSum = 0;
+        for (int i = 0; i < 9; i++) {
+            if (i == idx || i == jdx) {
+                continue;
+            }
+            checkSum += sevens[i];
         }
-        
-        if (cnt == 100) {
+        if (checkSum == 100) {
             return true;
-        } else {
-            dwarfs[i] = fakeDwarf1;
-            dwarfs[j] = fakeDwarf2;
-            return false;
         }
+        return false;
     }
 }
