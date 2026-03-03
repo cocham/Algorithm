@@ -1,8 +1,8 @@
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.LinkedList;
 
 class Solution {
-    static boolean[] visited;
+    static int size;
     
     static class Word {
         String word;
@@ -14,16 +14,17 @@ class Solution {
         }
     }
     
-    public int solution(String begin, String target, String[] words) {
-        visited = new boolean[words.length];
-        
+    public int solution(String begin, String target, String[] words) {        
+        size = begin.length();
         return bfs(begin, target, words);
+        
     }
     
     static int bfs(String begin, String target, String[] words) {
         Queue<Word> q = new LinkedList<>();
+        boolean[] visited = new boolean[words.length];
+
         q.add(new Word(begin, 0));
-        
         while (!q.isEmpty()) {
             Word cur = q.poll();
             
@@ -31,18 +32,21 @@ class Solution {
                 return cur.step;
             }
             
+            String word = cur.word;
+            
             for (int i = 0; i < words.length; i++) {
-                String word = words[i];
-                int cnt = 0;
+                if (visited[i]) continue;
                 
-                for (int j = 0; j < word.length(); j++) {
-                    if (cur.word.charAt(j) == word.charAt(j)) {
-                        cnt++;
+                int sameCnt = 0;
+                String comp = words[i];
+                for (int s = 0; s < size; s++) {
+                    if (word.charAt(s) == comp.charAt(s)) {
+                        sameCnt++;
                     }
                 }
                 
-                if (cnt == word.length() - 1 && !visited[i]) {
-                    q.add(new Word(word, cur.step + 1));
+                if (sameCnt == size - 1) {
+                    q.add(new Word(comp, cur.step + 1));
                     visited[i] = true;
                 }
             }
