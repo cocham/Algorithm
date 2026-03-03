@@ -1,40 +1,30 @@
-import java.util.Queue;
-import java.util.LinkedList;
-
 class Solution {
     static boolean[] visited;
     
     public int solution(int n, int[][] computers) {
-        visited = new boolean[n];
-        int cnt = 0;
+        visited = new boolean[computers.length];
         
-        for (int i = 0; i < n; i++) {
+        int ans = 0;
+        for (int i = 0; i < computers.length; i++) {
             if (!visited[i]) {
-                bfs(i, computers);
-                cnt++;
+                dfs(i, computers);
+                ans++;
             }
         }
         
-        return cnt;
+        return ans;
     }
     
-    static void bfs(int i, int[][] computers) {
-        Queue<Integer> q = new LinkedList<>();
-        q.add(i);
+    static void dfs(int i, int[][] computers) {
         visited[i] = true;
         
-        while (!q.isEmpty()) {
-            int cur = q.poll();
+        for (int j = 0; j < computers.length; j++) {
+            if (i == j) continue;
+            if (visited[j]) continue;
             
-            for (int j = 0; j < computers.length; j++) {
-                if (i == j) continue;
-                if (visited[j]) continue;
-                if (computers[cur][j] == 1) {
-                    q.add(j);
-                    visited[j] = true;
-                }
+            if (!visited[j] && computers[i][j] == 1) {
+                dfs(j, computers);
             }
         }
-            
     }
 }
