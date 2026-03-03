@@ -1,60 +1,55 @@
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.LinkedList;
 
 class Solution {
-    static int[] dx = {0,0,1,-1}; //동서남북
-    static int[] dy = {1,-1,0,0};
-    static int ans = 0;
-    static int N;
-    static int M;
-    static int[][] maps2;
+    static int n, m;
     
     static class Position {
-        int x;
-        int y;
+        int r, c, step;
         
-        Position(int x, int y) {
-            this.x = x;
-            this.y = y;
+        Position(int r, int c, int step) {
+            this.r = r;
+            this.c = c;
+            this.step = step;
         }
     }
     
     public int solution(int[][] maps) {
-        N = maps.length;
-        M = maps[0].length;
-        maps2 = maps;
+        n = maps.length;
+        m = maps[0].length;
         
-        bfs(0,0);
-        
-        
-        ans = maps2[N - 1][M - 1];
-        
-        if (ans == 1) {
-            return -1;
-        }
-        return ans;
+        return bfs(maps);
     }
     
-    static void bfs(int x, int y) {
-        Position pos = new Position(x,y);
+    static int bfs(int[][] maps) {
+        int[] dr = {-1,1,0,0};
+        int[] dc = {0,0,-1,1};
+
         Queue<Position> q = new LinkedList<>();
-        q.add(pos);
+        boolean[][] visited = new boolean[n][m];
+        q.add(new Position(0,0,1));
+        visited[0][0] = true;
         
         while (!q.isEmpty()) {
-            Position curPos = q.poll();
+            Position cur = q.poll();
+            
+            if (cur.r == n - 1 && cur.c == m - 1) {
+                return cur.step;
+            }
             
             for (int i = 0; i < 4; i++) {
-                int moveX = curPos.x + dx[i];
-                int moveY = curPos.y + dy[i];
+                int mr = cur.r + dr[i];
+                int mc = cur.c + dc[i];
                 
-                if (moveX >= 0 && moveX < N && moveY >= 0 && moveY < M) {
-                    if (maps2[moveX][moveY] == 1) {
-                        Position newPos = new Position(moveX, moveY);
-                        q.add(newPos);
-                        maps2[moveX][moveY] = maps2[curPos.x][curPos.y] + 1;
-                    }
-                }
-            }
+                if (mr < 0 || mr >= n || mc < 0 || mc >= m) continue;
+                if (visited[mr][mc]) continue;
+                if (maps[mr][mc] == 0) continue;
+                
+                q.add(new Position(mr, mc, cur.step + 1));
+                visited[mr][mc] = true;   
+            }   
         }
+        
+        return -1;
     }
 }
