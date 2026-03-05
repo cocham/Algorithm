@@ -5,76 +5,71 @@ import java.util.StringTokenizer;
 import java.util.PriorityQueue;
 
 public class Main {
-    static int N;
-    static int[] dr = {-1,1,0,0};
-    static int[] dc = {0,0,-1,1};
+    static int n;
     static int[][] arr;
-    static int[][] cost; 
-    static StringBuilder sb = new StringBuilder();
     
-    static class Node {
-        int r, c, cost;
+    static class Money {
+        int r, c, m;
         
-        Node (int r, int c, int cost) {
+        Money (int r, int c, int m) {
             this.r = r;
             this.c = c;
-            this.cost = cost;
+            this.m = m;
         }
     }
-    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int p = 1;
-        while(true) {
-            N = Integer.parseInt(br.readLine());
-            if (N == 0) break;
-            
-            arr = new int[N][N];
-            cost = new int[N][N];
 
-            for (int i = 0; i < N; i++) {
+        StringBuilder sb = new StringBuilder();
+        int idx = 1;
+        while (true) {
+            n = Integer.parseInt(br.readLine());
+            if (n == 0) break;
+            
+            arr = new int[n][n];
+            for (int i = 0; i < n; i++) {
                 StringTokenizer st = new StringTokenizer(br.readLine());
-                for (int j = 0; j < N; j++) {
+                for (int j = 0; j < n; j++) {
                     arr[i][j] = Integer.parseInt(st.nextToken());
                 }
             }
             
-            bfs();
-            sb.append("Problem ")
-                .append(p).append(": ")
-                .append(cost[N - 1][N - 1]).append('\n');
-            p++;
+            int lose = daik();
+            sb.append("Problem " + idx + ": " + lose).append('\n');
+            idx++;
         }
         
         System.out.print(sb);
+        
     }
     
-    static void bfs() {
-        PriorityQueue<Node> pq = new PriorityQueue<>((a,b) -> a.cost - b.cost);
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                cost[i][j] = Integer.MAX_VALUE;
-            }
-        }
+    static int daik() {
+        int[] dr = {-1,1,0,0};
+        int[] dc = {0,0,-1,1};
+        boolean[][] visited = new boolean[n][n];
+        PriorityQueue<Money> q = new PriorityQueue<>((a,b) -> a.m - b.m);
+        q.add(new Money(0,0,arr[0][0]));
+        visited[0][0] = true;
         
-        pq.add(new Node(0,0,arr[0][0]));
-        cost[0][0] = arr[0][0];
-        
-        while (!pq.isEmpty()) {
-            Node cur = pq.poll();
+        while (!q.isEmpty()) {
+            Money cur = q.poll();
             
-            if (cur.cost > cost[cur.r][cur.c]) continue;
+            if (cur.r == n - 1 && cur.c == n - 1) {
+                return cur.m;
+            }
             
             for (int i = 0; i < 4; i++) {
                 int nr = cur.r + dr[i];
                 int nc = cur.c + dc[i];
                 
-                if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
-                if (cur.cost + arr[nr][nc] < cost[nr][nc]) {
-                    cost[nr][nc] = cur.cost + arr[nr][nc];
-                    pq.add(new Node(nr, nc, cost[nr][nc]));
-                }
+                if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
+                if (visited[nr][nc]) continue;
+                
+                q.add(new Money(nr, nc, cur.m + arr[nr][nc]));
+                visited[nr][nc] = true;
             }
         }
+        
+        return 0;
     }
 }
