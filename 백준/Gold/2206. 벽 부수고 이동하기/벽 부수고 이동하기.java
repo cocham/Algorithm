@@ -1,81 +1,75 @@
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.util.StringTokenizer;
-import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Queue;
+
 
 public class Main {
-    static int[] dx = {-1,1,0,0};
-    static int[] dy = {0,0,-1,1};
-    static int N;
-    static int M;
-    static int[][] map;
-    static boolean[][][] visited;
+    static int N, M;
+    static int[][] arr;
     
     static class Position {
-        int x;
-        int y;
-        int step;
-        boolean destroyed;
-
-        Position(int x, int y, int step, boolean destroyed) {
-            this.x = x;
-            this.y = y;
+        int r, c, step, broken;
+        
+        Position (int r, int c, int step, int broken) {
+            this.r = r;
+            this.c = c;
             this.step = step;
-            this.destroyed = destroyed;
+            this.broken = broken;
         }
     }
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        map = new int[N][M];
-        visited = new boolean[N][M][2];
-        
+        arr = new int[N][M];
+
         for (int i = 0; i < N; i++) {
-            String[] s = br.readLine().split("");
-            for (int j = 0; j < M; j++) {
-                map[i][j] = Integer.parseInt(s[j]);
+            String line = br.readLine();
+            for (int j = 0 ; j < M; j++) {
+                arr[i][j] = line.charAt(j) - '0';
             }
         }
         
-        System.out.print(bfs(0,0));
+        System.out.print(bfs());
     }
     
-    static int bfs(int start, int end) {
+    static int bfs() {
+        boolean[][][] visited = new boolean[N][M][2];
         Queue<Position> q = new LinkedList<>();
-        q.add(new Position(start, end, 1, false));
+        q.add(new Position(0,0,1,0));
         visited[0][0][0] = true;
         
-        while(!q.isEmpty()) {
-            Position curPos = q.poll();
+        int[] dr = {-1,1,0,0};
+        int[] dc = {0,0,-1,1};
+        
+        while (!q.isEmpty()) {
+            Position cur = q.poll();
+            int broken = cur.broken;
             
-            if (curPos.x == N - 1 && curPos.y == M - 1) {
-                return curPos.step;
-            } 
+            if (cur.r == N - 1 && cur.c == M - 1) {
+                return cur.step;
+            }
             
             for (int i = 0; i < 4; i++) {
-                int mx = curPos.x + dx[i];
-                int my = curPos.y + dy[i];
-                int state = curPos.destroyed ? 1 : 0;
+                int nr = cur.r + dr[i];
+                int nc = cur.c + dc[i];
                 
-                if (mx >= 0 && mx < N && my >= 0 && my < M) {
-                   if (map[mx][my] == 0) {
-                        if (!visited[mx][my][state]) {
-                            visited[mx][my][state] = true;
-                            q.add(new Position(mx, my, curPos.step + 1, curPos.destroyed));
-                        }
-                    } else if (map[mx][my] == 1) {
-                       if (!visited[mx][my][1] && !curPos.destroyed) {
-                           visited[mx][my][1] = true;
-                           q.add(new Position(mx, my, curPos.step + 1, true));
-                       }
-                   }
+                if (nr < 0 || nr >= N || nc < 0 || nc >= M) continue;
+                
+                if (arr[nr][nc] == 0) {
+                    if (!visited[nr][nc][broken]) {
+                        q.add(new Position(nr, nc, cur.step + 1, cur.broken));
+                        visited[nr][nc][broken] = true;
+                    }
+                } else if (arr[nr][nc] == 1 && !visited[nr][nc][1] && broken == 0) {
+                        q.add(new Position(nr, nc, cur.step + 1, 1));
+                        visited[nr][nc][1] = true;
+                    
                 }
             }
         }
