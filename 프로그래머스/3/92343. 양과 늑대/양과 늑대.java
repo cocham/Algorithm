@@ -1,50 +1,50 @@
 import java.util.ArrayList;
 
 class Solution {
-    static ArrayList<Integer>[] tree;
     static int maxSheep;
-    static int[] info;
+    static ArrayList<Integer>[] tree;
     
     public int solution(int[] info, int[][] edges) {
-        
-        this.info = info;
-        
         tree = new ArrayList[info.length];
-        for (int i = 0; i < info.length; i++) {
+        for (int i = 0; i < tree.length; i++) {
             tree[i] = new ArrayList<>();
         }
         
         for (int i = 0; i < edges.length; i++) {
             int root = edges[i][0];
             int child = edges[i][1];
+            
             tree[root].add(child);
         }
         
-        dfs(0, 1, 0, tree[0]);
+        dfs(1, 0, info, tree[0]);
         return maxSheep;
+        
     }
     
-    static void dfs(int node, int sheep, int wolf, ArrayList<Integer> nextNodes) {
+    static void dfs(int sheep, int wolf, int[] info, ArrayList<Integer> childs) {
         if (wolf >= sheep) {
             return;
         }
         
         maxSheep = Math.max(sheep, maxSheep);
         
-        for (int i = 0; i < nextNodes.size(); i++) {
-            int next = nextNodes.get(i); //child
+        for (int i = 0; i < childs.size(); i++) {
+            int nomi = childs.get(i);
             
-            ArrayList<Integer> nextNext = new ArrayList<>(nextNodes);
+            ArrayList<Integer> nextChilds = new ArrayList<>(childs);
             
-            nextNext.remove(Integer.valueOf(next));
+            nextChilds.remove(i);
             
-            nextNext.addAll(tree[next]);
+            nextChilds.addAll(tree[nomi]);
             
-            if (info[next] == 1) {
-                dfs(next, sheep, wolf + 1, nextNext);
-            } else if (info[next] == 0) {
-                dfs(next, sheep + 1, wolf, nextNext);
+            if (info[nomi] == 0) {
+                dfs(sheep + 1, wolf, info, nextChilds);
+            } else {
+                dfs(sheep, wolf + 1, info, nextChilds);
             }
         }
+        
+        
     }
 }
