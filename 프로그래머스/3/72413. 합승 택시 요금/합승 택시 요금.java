@@ -1,74 +1,72 @@
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
-import java.util.Arrays;
+
 
 class Solution {
-    
-    static class Node {
+    static class Edge {
         int to, cost;
         
-        Node (int to, int cost) {
+        Edge(int to, int cost) {
             this.to = to;
             this.cost = cost;
         }
     }
     
+    static ArrayList<Edge>[] graph;
     
-    public int solution(int n, int s, int a, int b, int[][] fares) {   
-        ArrayList<Node>[] graph = new ArrayList[n + 1];
-    
+    public int solution(int n, int s, int a, int b, int[][] fares) {
+        graph = new ArrayList[n + 1];
         for (int i = 1; i <= n; i++) {
             graph[i] = new ArrayList<>();
         }
         
         for (int[] fare : fares) {
-            int start = fare[0];
-            int to = fare[1];
-            int cost = fare[2];
+            int c = fare[0];
+            int d = fare[1];
+            int f = fare[2];
             
-            graph[start].add(new Node(to, cost));
-            graph[to].add(new Node(start, cost));
+            graph[c].add(new Edge(d, f));
+            graph[d].add(new Edge(c, f));
         }
         
-        int[] distS = daik(s, n, graph);
-        int[] distA = daik(a, n, graph);
-        int[] distB = daik(b, n, graph);
+        int[] sCosts = daik(s, n);
+        int[] aCosts = daik(a, n);
+        int[] bCosts = daik(b, n);
         
-        int minFare = Integer.MAX_VALUE;
+        int answer = Integer.MAX_VALUE;
+        
         for (int i = 1; i <= n; i++) {
-            if (distS[i] == Integer.MAX_VALUE || distA[i] == Integer.MAX_VALUE || distB[i] == Integer.MAX_VALUE) continue;
-            
-            minFare = Math.min(minFare, distS[i] + distA[i] + distB[i]);
+            int totalCost = sCosts[i] + aCosts[i] + bCosts[i];
+            answer = Math.min(answer, totalCost);
         }
-       
-        return minFare;
+        
+        return answer;
     }
     
-    static int[] daik(int start, int n, ArrayList<Node>[] graph) {
-        int[] dist = new int[n + 1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[start] = 0;
+    static int[] daik(int start, int n) {
+        int[] minCosts = new int[n + 1];
+        Arrays.fill(minCosts, Integer.MAX_VALUE);
+        minCosts[start] = 0;
         
-        PriorityQueue<Node> pq = new PriorityQueue<>((a,b) -> a.cost - b.cost);
-        pq.add(new Node(start, 0));
+        PriorityQueue<Edge> pq = new PriorityQueue<>((a,b) -> a.cost - b.cost);
+        pq.add(new Edge(start, 0));
         
         while (!pq.isEmpty()) {
-            Node cur = pq.poll();
+            Edge cur = pq.poll();
             
-            if (cur.cost > dist[cur.to]) continue;
+            if (cur.cost > minCosts[cur.to]) continue;
             
-            for (Node next : graph[cur.to]) {
-                int to = next.to;
-                
+            for (Edge next : graph[cur.to]) {
                 int nextCost = cur.cost + next.cost;
                 
-                if (nextCost < dist[to]) {
-                    dist[to] = nextCost;
-                    pq.add(new Node(to, nextCost));
+                if (nextCost < minCosts[next.to]) {
+                    minCosts[next.to] = nextCost;
+                    pq.add(new Edge(next.to, nextCost));
                 }
-            } 
+            }
         }
         
-        return dist;
+        return minCosts;
     }
 }
