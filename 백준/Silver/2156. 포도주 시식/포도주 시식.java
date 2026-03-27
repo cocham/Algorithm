@@ -7,29 +7,27 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        
-        int[] quantity = new int[n + 1];
-        
+        int[] arr = new int[n + 1];
         for (int i = 1; i <= n; i++) {
-            quantity[i] = Integer.parseInt(br.readLine());
+            arr[i] = Integer.parseInt(br.readLine());
         }
-
+        
         int[] dp = new int[n + 1];
-        dp[1] = quantity[1];
-        int max = 0;
-
+        dp[1] = arr[1];
+        
         if (n == 1) {
-            max = dp[1];
-        } else if (n >= 2) {
-            dp[2] = quantity[1] + quantity[2];
-            max = dp[2];
+            System.out.print(dp[1]);
+            return;
         }
-
+        
+        dp[2] = arr[1] + arr[2];
+        int max = dp[2];
+        
         for (int i = 3; i <= n; i++) {
-            dp[i] = Math.max(Math.max(dp[i-3] + quantity[i-1], dp[i-2]) + quantity[i], dp[i-1]);
+            dp[i] = Math.max(Math.max(dp[i - 3] + arr[i - 1] + arr[i], dp[i - 1]), dp[i - 2] + arr[i]);
             max = Math.max(dp[i], max);
         }
         
-        System.out.println(max);
+        System.out.print(max);
     }
 }
