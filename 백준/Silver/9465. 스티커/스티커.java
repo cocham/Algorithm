@@ -30,7 +30,7 @@ public class Main {
         dp[1][1] = arr[1][1];
         dp[2][1] = arr[2][1];
         
-        //0 = 안뗀다 1 = 윗행을 뗀다 2 = 아래행을 뗀다
+        //0 = 안뗀다 1 = 윗행을 뗀다(1행) 2 = 아래행을 뗀다(2행)
         for (int i = 2; i <= n; i++) {
             dp[0][i] = Math.max(Math.max(dp[0][i - 1], dp[1][i - 1]), dp[2][i - 1]);
             dp[1][i] = Math.max(dp[0][i - 1], dp[2][i - 1]) + arr[1][i];
