@@ -1,55 +1,58 @@
+import java.util.Queue;
+import java.util.LinkedList;
+
 class Solution {
     public int solution(int[] queue1, int[] queue2) {
-        int answer = 0;
-        int length = queue1.length;
-        long sum1 = 0;
-        long sum2 = 0;
         
-        for (int i = 0; i < length; i++) {
-            int q1Num = queue1[i];
-            int q2Num = queue2[i];
-            sum1 += q1Num;
-            sum2 += q2Num;
+        long baseSum = 0;
+        for (int i = 0; i < queue1.length; i++) {
+            baseSum += queue1[i];
+        }
+        for (int i = 0; i < queue2.length; i++) {
+            baseSum += queue2[i];
         }
         
-        if ((sum1 + sum2) % 2 != 0) {
+        if (baseSum % 2 != 0) {
             return -1;
         }
         
-        long total = (sum1 + sum2) / 2;
-        int[] arr = new int[2 * length];
-        System.arraycopy(queue1, 0, arr, 0, length);
-        System.arraycopy(queue2, 0, arr, length, length);
-        
-        int q1 = 0;
-        int q2 = length;
-        long sum = sum1;
-        
-        while (q1 < q2) {
-            if (sum == total) {
-                break;
-            }
-            
-            if (sum < total && q2 == 2 * length - 1) {
-                break;
-            }
-            
-                       
-            if (sum > total) {
-                sum -= arr[q1];
-                q1++;
-            } else if (sum < total) {
-                sum += arr[q2];
-                q2++;
-            }
-            
-            answer++;
+        Queue<Integer> q1 = new LinkedList<>();
+        Queue<Integer> q2 = new LinkedList<>();
+        long sum1 = 0;
+
+        for (int i = 0; i < queue1.length; i++) {
+            q1.add(queue1[i]);
+            sum1 += queue1[i];
         }
         
-        if (sum != total) {
-            answer = -1;
+        for (int i = 0; i < queue2.length; i++) {
+            q2.add(queue2[i]);
         }
         
-        return answer;
+        long midSum = baseSum / 2;
+
+        int cnt = 0;
+        int limit = Math.max(queue1.length, queue2.length) * 4;
+        while (true) {
+            if (sum1 == midSum) break;
+            if (cnt > limit) {
+                cnt = -1;
+                break;
+            } 
+            
+            if (sum1 > midSum) {
+                int pop = q1.poll();
+                q2.add(pop);
+                sum1 -= pop;
+            } else if (sum1 < midSum) {
+                int pop = q2.poll();
+                q1.add(pop);
+                sum1 += pop;
+            }
+            
+            cnt++;
+        }
+        
+        return cnt;
     }
 }
