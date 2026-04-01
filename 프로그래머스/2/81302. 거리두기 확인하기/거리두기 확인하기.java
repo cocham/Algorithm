@@ -7,11 +7,10 @@ class Solution {
     
     static int[] dr3 = {-1,1,1,-1};
     static int[] dc3 = {1,1,-1,-1};
-    
-
-    public int[] solution(String[][] places) {
-        int[] answer = new int[places.length];
         
+    public int[] solution(String[][] places) {
+        
+        int[] answer = new int[places.length];
         for (int i = 0; i < 5; i++) {
             if (isSafe(places[i])) {
                 answer[i] = 1;
@@ -26,10 +25,8 @@ class Solution {
     static boolean isSafe(String[] place) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                if (place[i].charAt(j) == 'P') {
-                    if (!check(i, j, place)) {
-                        return false;
-                    }
+                if (place[i].charAt(j) == 'P' && !check(i,j,place)) {
+                    return false;
                 }
             }
         }
@@ -43,7 +40,6 @@ class Solution {
             int nc = c + dc1[i];
             
             if (nr < 0 || nr >= 5 || nc < 0 || nc >= 5) continue;
-            
             if (place[nr].charAt(nc) == 'P') {
                 return false;
             }
@@ -54,7 +50,6 @@ class Solution {
             int nc = c + dc2[i];
             
             if (nr < 0 || nr >= 5 || nc < 0 || nc >= 5) continue;
-            
             if (place[nr].charAt(nc) == 'P') {
                 if (place[r + dr1[i]].charAt(c + dc1[i]) != 'X') {
                     return false;
@@ -62,14 +57,14 @@ class Solution {
             }
         }
         
+        
         for (int i = 0; i < 4; i++) {
             int nr = r + dr3[i];
             int nc = c + dc3[i];
             
             if (nr < 0 || nr >= 5 || nc < 0 || nc >= 5) continue;
-            
             if (place[nr].charAt(nc) == 'P') {
-                if (place[nr].charAt(c) != 'X' || place[r].charAt(nc) != 'X') {
+                if (place[r].charAt(nc) != 'X' || place[nr].charAt(c) != 'X') {
                     return false;
                 }
             }
