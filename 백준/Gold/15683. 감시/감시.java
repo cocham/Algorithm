@@ -5,22 +5,23 @@ import java.util.StringTokenizer;
 import java.util.ArrayList;
 
 public class Main {
-    static int N, M;
-    static int[][] arr;
-    static ArrayList<CCTV> candidates = new ArrayList<>();
-    static int safe = Integer.MAX_VALUE;
-    static int[] dr = {-1,1,0,0};
-    static int[] dc = {0,0,-1,1};
     
     static class CCTV {
-        int r, c, type;
+        int r, c, type; 
         
-        CCTV (int r, int c, int type) {
+        CCTV(int r, int c, int type) {
             this.r = r;
             this.c = c;
             this.type = type;
         }
     }
+    
+    static int N, M;
+    static int[][] arr;
+    static int[] dr = {-1,1,0,0};
+    static int[] dc = {0,0,-1,1};
+    static ArrayList<CCTV> cctvs = new ArrayList<>();
+    static int safe = Integer.MAX_VALUE;
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -33,8 +34,9 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
+                            
                 if (arr[i][j] >= 1 && arr[i][j] <= 5) {
-                    candidates.add(new CCTV(i, j, arr[i][j]));
+                    cctvs.add(new CCTV(i,j,arr[i][j]));
                 }
             }
         }
@@ -43,96 +45,111 @@ public class Main {
         System.out.print(safe);
     }
     
-    static void dfs(int depth, int[][] map) {
-        if (depth == candidates.size()) {
+    // d = 상하좌우
+    static void dfs(int idx, int[][] map) {
+        if (idx == cctvs.size()) {
             int cnt = 0;
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < M; j++) {
-                    if (map[i][j] == 0) {
+                    if(map[i][j] == 0) {
                         cnt++;
                     }
                 }
             }
-            
             safe = Math.min(cnt, safe);
             return;
         }
         
-        CCTV cur = candidates.get(depth);
+        CCTV cctv = cctvs.get(idx);
         
-        if (cur.type == 1) {
+        if (cctv.type == 1) {
             for (int d = 0; d < 4; d++) {
                 int[][] newMap = copyMap(map);
-                watch(cur.r, cur.c, d, newMap);
-                dfs(depth + 1, newMap);
+                watch(cctv, d, newMap);
+                dfs(idx + 1, newMap);
             }
-        } else if (cur.type == 2) {
+        } else if (cctv.type == 2) {
             for (int d = 0; d < 2; d++) {
                 int[][] newMap = copyMap(map);
                 if (d == 0) {
-                    watch(cur.r, cur.c, 0, newMap);
-                    watch(cur.r, cur.c, 1, newMap);
+                    watch(cctv, 0, newMap);
+                    watch(cctv, 1, newMap);
                 } else {
-                    watch(cur.r, cur.c, 2, newMap);
-                    watch(cur.r, cur.c, 3, newMap);
+                    watch(cctv, 2, newMap);
+                    watch(cctv, 3, newMap);
                 }
-                dfs(depth + 1, newMap);
+                dfs(idx + 1, newMap);
             }
-        } else if (cur.type == 3) {
+        } else if (cctv.type == 3) {
             for (int d = 0; d < 4; d++) {
                 int[][] newMap = copyMap(map);
                 if (d == 0) {
-                    watch(cur.r, cur.c, 0, newMap);
-                    watch(cur.r, cur.c, 3, newMap);
+                    watch(cctv, 0, newMap);
+                    watch(cctv, 3, newMap);
                 } else if (d == 1) {
-                    watch(cur.r, cur.c, 1, newMap);
-                    watch(cur.r, cur.c, 3, newMap);
+                    watch(cctv, 1, newMap);
+                    watch(cctv, 3, newMap);
                 } else if (d == 2) {
-                    watch(cur.r, cur.c, 1, newMap);
-                    watch(cur.r, cur.c, 2, newMap);
+                    watch(cctv, 2, newMap);
+                    watch(cctv, 1, newMap);
                 } else if (d == 3) {
-                    watch(cur.r, cur.c, 0, newMap);
-                    watch(cur.r, cur.c, 2, newMap);
+                    watch(cctv, 2, newMap);
+                    watch(cctv, 0, newMap);
                 }
-                dfs(depth + 1, newMap);
+                dfs(idx + 1, newMap);
             }
-        } else if (cur.type == 4) {
+        } else if (cctv.type == 4) {
             for (int d = 0; d < 4; d++) {
-                int[][] newMap = copyMap(map);                
-                for (int i = 0; i < 4; i++) {
-                    if (i == d) continue;
-                    watch(cur.r, cur.c, i, newMap);
+                int[][] newMap = copyMap(map);
+                if (d == 0) {
+                    watch(cctv, 0, newMap);
+                    watch(cctv, 2, newMap);
+                    watch(cctv, 3, newMap);
+                } else if (d == 1) {
+                    watch(cctv, 0, newMap);
+                    watch(cctv, 1, newMap);
+                    watch(cctv, 3, newMap);
+                } else if (d == 2) {
+                    watch(cctv, 1, newMap);
+                    watch(cctv, 2, newMap);
+                    watch(cctv, 3, newMap);
+                } else if (d == 3) {
+                    watch(cctv, 0, newMap);
+                    watch(cctv, 1, newMap);
+                    watch(cctv, 2, newMap);
                 }
-                dfs(depth + 1, newMap);
+                dfs(idx + 1, newMap);
             }
-        } else if (cur.type == 5) {
-            int[][] newMap = copyMap(map);
-            watch(cur.r, cur.c, 0, newMap);
-            watch(cur.r, cur.c, 1, newMap);
-            watch(cur.r, cur.c, 2, newMap);
-            watch(cur.r, cur.c, 3, newMap);
-            
-            dfs(depth + 1, newMap);
+        } else if (cctv.type == 5) {
+                int[][] newMap = copyMap(map);
+                watch(cctv, 0, newMap);
+                watch(cctv, 1, newMap);
+                watch(cctv, 2, newMap);
+                watch(cctv, 3, newMap);
+                dfs(idx + 1, newMap);
         }
     }
     
-    static void watch(int r, int c, int dir, int[][] map) {
-        int nr = r;
-        int nc = c;
+
+    
+    
+    static void watch(CCTV cctv, int d, int[][] map) {
+        int r = cctv.r;
+        int c = cctv.c;
         
-        while(true) {
-            nr += dr[dir];
-            nc += dc[dir];
+        while (true) {
+            int nr = r + dr[d];
+            int nc = c + dc[d];
             
             if (nr < 0 || nr >= N || nc < 0 || nc >= M) break;
             if (map[nr][nc] == 6) break;
-            if (map[nr][nc] > 0 && map[nr][nc] < 6) {
-                continue;
+
+            if (arr[nr][nc] == 0) {
+                map[nr][nc] = -1; 
             }
-            
-            if (map[nr][nc] == 0) {
-                map[nr][nc] = -1;
-            } 
+
+            r = nr;
+            c = nc;
         }
     }
     
