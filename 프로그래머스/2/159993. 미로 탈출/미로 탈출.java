@@ -1,66 +1,69 @@
-import java.util.Queue;
-import java.util.LinkedList;
+import java.util.*;
 
 class Solution {
     
+    static class Position {
+        int r, c, step;
+        
+        Position (int r, int c, int step) {
+            this.r = r;
+            this.c = c;
+            this.step = step;
+        }
+    }
+    
     static int n, m;
-
     
     public int solution(String[] maps) {
         n = maps.length;
         m = maps[0].length();
-        
-        int[] start = new int[2];
-        int[] lever = new int[2];
-        int[] end = new int[2];
+        int sr = 0, sc = 0;
+        int lr = 0, lc = 0;
+        int er = 0, ec = 0; 
         
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (maps[i].charAt(j) == 'S') {
-                    start[0] = i;
-                    start[1] = j;
+                    sr = i;
+                    sc = j;
                 } else if (maps[i].charAt(j) == 'L') {
-                    lever[0] = i;
-                    lever[1] = j;
+                    lr = i;
+                    lc = j;
                 } else if (maps[i].charAt(j) == 'E') {
-                    end[0] = i;
-                    end[1] = j;
-                }
+                    er = i;
+                    ec = j;
+                } 
             }
         }
         
-        int stoL = bfs(maps, start[0], start[1], lever[0], lever[1]);
-        if (stoL == -1) {
+        int stol = bfs(sr, sc, lr, lc, maps);
+        if (stol == -1) {
+            return -1;
+        }
+        int ltoe = bfs(lr, lc, er, ec, maps);
+        if (ltoe == -1) {
             return -1;
         }
         
-        int ltoE = bfs(maps, lever[0], lever[1], end[0], end[1]);
-        if (ltoE == -1) {
-            return -1;
-        }
-        
-        return stoL + ltoE;
+        return stol + ltoe;
     }
     
-    static int bfs(String[] maps, int goR, int goC, int toR, int toC) {
+    static int bfs(int sr, int sc, int er, int ec, String[] maps) {
+        
+        Queue<Position> q = new LinkedList<>();
+        boolean[][] visited = new boolean[n][m];
+        
+        q.add(new Position(sr, sc, 0));
+        visited[sr][sc] = true;
+        
         int[] dr = {-1,1,0,0};
         int[] dc = {0,0,-1,1};
-
-        boolean[][] visited = new boolean[n][m];
-        int[][] time = new int[n][m];
-        Queue<int[]> q = new LinkedList<>();
         
-        q.add(new int[]{goR, goC});
-        visited[goR][goC] = true;
-
         while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            int r = cur[0];
-            int c = cur[1];
+            Position cur = q.poll();
+            int r = cur.r, c = cur.c, step = cur.step;
             
-            if (r == toR && c == toC) {
-                return time[toR][toC];
-            }
+            if (r == er && c == ec) return step;
             
             for (int i = 0; i < 4; i++) {
                 int nr = r + dr[i];
@@ -68,12 +71,10 @@ class Solution {
                 
                 if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
                 if (visited[nr][nc]) continue;
-                if (maps[nr].charAt(nc) == 'X') continue;
-                
-                q.add(new int[]{nr, nc});
-                visited[nr][nc] = true;
-                time[nr][nc] = time[r][c] + 1;
-                
+                if (maps[nr].charAt(nc) != 'X') {
+                    q.add(new Position(nr, nc, step + 1));
+                    visited[nr][nc] = true;
+                }
             }
         }
         
