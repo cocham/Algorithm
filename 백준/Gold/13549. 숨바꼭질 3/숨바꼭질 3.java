@@ -2,8 +2,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.util.StringTokenizer;
-import java.util.Queue;
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class Main {
     static int N, K;
@@ -24,19 +23,17 @@ public class Main {
         for (int i = 0; i < minTime.length; i++) {
             minTime[i] = Integer.MAX_VALUE;
         }
-        Queue<int[]> q = new LinkedList<>();
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[1] - b[1]);
         
-        q.add(new int[]{N, 0});
+        pq.add(new int[]{N, 0});
         minTime[N] = 0;
         int[] direc = {-1, 1, 2};
         
-        while (!q.isEmpty()) {
-            int[] x = q.poll();
+        while (!pq.isEmpty()) {
+            int[] x = pq.poll();
             int r = x[0];
             int curT = x[1];
-                
-            if (r == K) break;
-            
+                            
             for (int i = 0; i < 3; i++) {
                 int nr = r + direc[i];
                 int t = 1;
@@ -48,7 +45,7 @@ public class Main {
                 if (nr < 0 || nr > 100000) continue;
                 if (curT + t < minTime[nr]) {
                     minTime[nr] = curT + t;
-                    q.add(new int[]{nr, curT + t});
+                    pq.add(new int[]{nr, curT + t});
                 }
             }
         }
