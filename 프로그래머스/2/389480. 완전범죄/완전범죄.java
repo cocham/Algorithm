@@ -1,40 +1,50 @@
+import java.util.*;
+
 class Solution {
     public int solution(int[][] info, int n, int m) {
-                    
         int len = info.length;
-        int INF = 100000;
         
-        int[][] dp = new int[len + 1][m];
+        int[][] minCost = new int[len + 1][m];
         for (int i = 0; i <= len; i++) {
             for (int j = 0; j < m; j++) {
-                dp[i][j] = INF;
+                minCost[i][j] = Integer.MAX_VALUE;
             }
         }
         
-        dp[0][0] = 0;
+        minCost[0][0] = 0;
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{0,0,0}); //총 개수 / a흔적 / b흔적
         
-        for (int i = 1; i <= len; i++) {
-            int aPick = info[i - 1][0];
-            int bPick = info[i - 1][1];
+        int answer = Integer.MAX_VALUE;
+        while(!q.isEmpty()) {
+            int[] cur = q.poll();
+            int t = cur[0], a = cur[1], b = cur[2];
             
-            for (int b = 0; b < m; b++) {                
-                dp[i][b] = Math.min(dp[i][b], dp[i - 1][b] + aPick);
-                if (b + bPick < m) {
-                    dp[i][b + bPick] = Math.min(dp[i][b + bPick], dp[i - 1][b]);
-                }
-                
+            if (a > minCost[t][b]) continue;
+            
+            if (t == len) {
+                answer = Math.min(a, answer);
+                continue;
             }
+            
+            //a가 훔치는 경우
+            int aGain = a + info[t][0];
+            
+            if (aGain < n && aGain < minCost[t + 1][b]) {
+                q.add(new int[]{t + 1, aGain, b});
+                minCost[t + 1][b] = aGain;
+            }
+            
+            //b가 훔치는 경우
+            int bGain = b + info[t][1];
+            
+            if (bGain < m && a < minCost[t + 1][bGain]) {
+                q.add(new int[]{t + 1, a, bGain});
+                minCost[t + 1][bGain] = a;
+            }    
         }
         
-        int min = INF;
-        for (int b = 0; b < m; b++) {
-            min = Math.min(dp[len][b], min);
-        }
+        return answer == Integer.MAX_VALUE ? -1 : answer;
         
-        
-        if (min >= n) {
-            return -1;
-        }
-        return min;
     }
 }
