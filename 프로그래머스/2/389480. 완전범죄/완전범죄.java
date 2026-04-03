@@ -1,50 +1,43 @@
-import java.util.*;
-
 class Solution {
     public int solution(int[][] info, int n, int m) {
+
         int len = info.length;
+        int INF = 100000;
         
-        int[][] minCost = new int[len + 1][m];
+        int[][] dp = new int[len + 1][m];
         for (int i = 0; i <= len; i++) {
             for (int j = 0; j < m; j++) {
-                minCost[i][j] = Integer.MAX_VALUE;
+                dp[i][j] = INF;
             }
         }
         
-        minCost[0][0] = 0;
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{0,0,0}); //총 개수 / a흔적 / b흔적
-        
-        int answer = Integer.MAX_VALUE;
-        while(!q.isEmpty()) {
-            int[] cur = q.poll();
-            int t = cur[0], a = cur[1], b = cur[2];
+        dp[0][0] = 0;
+        // i번째 물건
+        for (int i = 1; i <= len; i++) {
+            int infoA = info[i-1][0];
+            int infoB = info[i-1][1];
             
-            if (a > minCost[t][b]) continue;
-            
-            if (t == len) {
-                answer = Math.min(a, answer);
-                continue;
+            // j는 b의 누적 흔적점수
+            for (int j = 0; j < m; j++) {
+                
+                // a를 뽑음  
+                dp[i][j] = Math.min(dp[i-1][j] + infoA, dp[i][j]);
+                
+                // b를 뽑음
+                if (j + infoB < m) {
+                    dp[i][j + infoB] = Math.min(dp[i][j + infoB], dp[i-1][j]);
+                }
             }
-            
-            //a가 훔치는 경우
-            int aGain = a + info[t][0];
-            
-            if (aGain < n && aGain < minCost[t + 1][b]) {
-                q.add(new int[]{t + 1, aGain, b});
-                minCost[t + 1][b] = aGain;
-            }
-            
-            //b가 훔치는 경우
-            int bGain = b + info[t][1];
-            
-            if (bGain < m && a < minCost[t + 1][bGain]) {
-                q.add(new int[]{t + 1, a, bGain});
-                minCost[t + 1][bGain] = a;
-            }    
         }
         
-        return answer == Integer.MAX_VALUE ? -1 : answer;
+        int answer = INF;
+        for(int i = 0; i < m; i++) {
+            answer = Math.min(answer, dp[len][i]);
+        }
         
+        if (answer >= n) {
+            return -1;
+        }
+        return answer;
     }
 }
