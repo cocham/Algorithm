@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 30564 KB, 시간: 512 ms
+메모리: 86448 KB, 시간: 496 ms
 
 ### 분류
 
@@ -12,7 +12,7 @@
 
 ### 제출 일자
 
-2025년 11월 17일 15:36:43
+2026년 4월 14일 12:45:29
 
 ### 문제 설명
 
@@ -41,7 +41,7 @@
 	</li>
 </ol>
 
-<p style="text-align: center;"><img alt="" src="" style="height: 238px; width: 500px;"></p>
+<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/22dc1ff3-6e90-4441-b84f-6544eb329eeb/-/preview/" style="height: 238px; width: 500px;"></p>
 
 <ol start="5">
 	<li>한 명이 2-4번까지의 과정을 진행하는 것을 1번 진행한 것으로 보며 다음과 같은 방법으로 게임의 승패가 결정된다.
@@ -53,7 +53,7 @@
 	</li>
 </ol>
 
-<p style="text-align: center;"><img alt="" src="" style="height: 172px; width: 500px;"></p>
+<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/3e2fe162-2931-457c-808f-1f84551e7061/-/preview/" style="height: 172px; width: 500px;"></p>
 
 <p>게임을 $M$번 진행한 후 승리한 사람은 누구일까?</p>
 

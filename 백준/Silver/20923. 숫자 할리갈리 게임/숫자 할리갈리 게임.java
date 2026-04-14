@@ -1,107 +1,67 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.util.StringTokenizer;
-import java.util.Deque;
 import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        
         Deque<Integer> dodo = new ArrayDeque<>();
         Deque<Integer> su = new ArrayDeque<>();
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
         
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             dodo.addFirst(Integer.parseInt(st.nextToken()));
             su.addFirst(Integer.parseInt(st.nextToken()));
         }
         
-        Deque<Integer> doTurn = new ArrayDeque<>();
-        Deque<Integer> suTurn = new ArrayDeque<>();
-        String winner = "";
-        while (m > 0) {
-
-            if (dodo.isEmpty()) {
-                winner = "su";
-                break;
+        Deque<Integer> donq = new LinkedList<>();
+        Deque<Integer> suq = new LinkedList<>();
+        
+        
+        for (int i = 0; i < M; i++) {
+            if (i % 2 == 0) {
+                donq.add(dodo.poll());
+                if (dodo.size() == 0) break;
+            } else {
+                suq.add(su.poll());
+                if (su.size() == 0) break;
             }
-            doTurn.addFirst(dodo.poll());
-            if (dodo.isEmpty()) {
-                winner = "su";
-                break;
-            }
-
-            if (!doTurn.isEmpty() && doTurn.peek() == 5 
-                || !suTurn.isEmpty() && suTurn.peek() == 5) {
-                while(!suTurn.isEmpty()) {
-                    dodo.addLast(suTurn.pollLast());
-                }
-                while(!doTurn.isEmpty()) {
-                    dodo.addLast(doTurn.pollLast());
-                } 
-            } else if (!doTurn.isEmpty() && !suTurn.isEmpty() 
-                && doTurn.peek() + suTurn.peek() == 5) {
-                while(!doTurn.isEmpty()) {
-                    su.addLast(doTurn.pollLast());
-                } 
-                while(!suTurn.isEmpty()) {
-                    su.addLast(suTurn.pollLast());
-                }
-            }
-            m--;
-
-            if (m == 0) {
-                break;
-            }
-
-            if (su.isEmpty()) {
-                winner = "do";
-                break;
-            }
-            suTurn.addFirst(su.poll());
-            if (su.isEmpty()) {
-                winner = "do";
-                break;
-            }
-
-            if (!doTurn.isEmpty() && doTurn.peek() == 5 
-                || !suTurn.isEmpty() && suTurn.peek() == 5) {
-                while(!suTurn.isEmpty()) {
-                    dodo.addLast(suTurn.pollLast());
-                }
-                while(!doTurn.isEmpty()) {
-                    dodo.addLast(doTurn.pollLast());
-                } 
-            } else if (!doTurn.isEmpty() && !suTurn.isEmpty() 
-                && doTurn.peek() + suTurn.peek() == 5) {
-                while(!doTurn.isEmpty()) {
-                    su.addLast(doTurn.pollLast());
-                } 
-                while(!suTurn.isEmpty()) {
-                    su.addLast(suTurn.pollLast());
-                }
-            }
-            m--;
             
-            if (m == 0) {
-                break;
+            int sutop = suq.isEmpty() ? 0 : suq.peekLast();
+            int dotop = donq.isEmpty() ? 0 : donq.peekLast();
+
+            if (dotop == 5 || sutop == 5) {
+                while (!suq.isEmpty()) {
+                    dodo.addLast(suq.poll());
+                }
+                while (!donq.isEmpty()) {
+                    dodo.addLast(donq.poll());
+                }
+            } 
+            if (!donq.isEmpty() && !suq.isEmpty() && sutop + dotop == 5) {
+                while (!donq.isEmpty()) {
+                    su.addLast(donq.poll());
+                }
+                while (!suq.isEmpty()) {
+                    su.addLast(suq.poll());
+                }
             }
         }
 
-        if (dodo.size() < su.size()) {
-            winner = "su";
-        } else if (dodo.size() > su.size()) {
-            winner = "do";
-        } else if (dodo.size() == su.size()) {
-            winner = "dosu";
+        if (dodo.size() > su.size()) {
+            System.out.print("do");
+        } else if (su.size() > dodo.size()) {
+            System.out.print("su");
+        } else {
+            System.out.print("dosu");
         }
-
-        System.out.println(winner);
     }
 }
