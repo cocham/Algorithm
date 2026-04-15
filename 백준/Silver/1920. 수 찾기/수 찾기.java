@@ -20,9 +20,10 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
         
+        
         for (int i = 0; i < M; i++) {
             int target = Integer.parseInt(st.nextToken());
-            if (Arrays.binarySearch(arr, target) >= 0) {
+            if (binarySearch(arr, target)) {
                 sb.append(1).append('\n');
             } else {
                 sb.append(0).append('\n');
@@ -30,5 +31,25 @@ public class Main {
         }
         
         System.out.print(sb);
+    }
+    
+    static boolean binarySearch(int[] arr, int n) {
+        int low = 0;
+        int high = arr.length - 1;
+           
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (arr[mid] == n) {
+                return true;
+            } else if (arr[mid] < n) {
+                low = mid + 1;
+            } else if (arr[mid] > n) {
+                high = mid - 1;
+            }
+            
+        }
+        
+        return false;
     }
 }
