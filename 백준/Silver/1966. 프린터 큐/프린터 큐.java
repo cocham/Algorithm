@@ -1,79 +1,53 @@
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.util.StringTokenizer;
 import java.util.LinkedList;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
+        StringTokenizer st;
+        int T = Integer.parseInt(br.readLine());
+        
         StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < t; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int n = Integer.parseInt(st.nextToken());
-            int m = Integer.parseInt(st.nextToken());
-
-            Docs docs = new Docs();
+        for (int t = 0; t < T; t++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < n; j++) {
-                Doc doc = new Doc(j, Integer.parseInt(st.nextToken()));
-                docs.addDocs(doc);
+            int N = Integer.parseInt(st.nextToken());
+            int idx = Integer.parseInt(st.nextToken());
+            LinkedList<int[]> q = new LinkedList<>();
+
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < N; i++) {
+                int x = Integer.parseInt(st.nextToken());
+                q.add(new int[]{i, x});
             }
-            sb.append(docs.doPrint(m)).append('\n');
+            
+            int cnt = 0;
+            while (!q.isEmpty()) {
+                int[] out = q.poll();
+                boolean isMax = true;
+                
+                for (int i = 0; i < q.size(); i++) {
+                    if (q.get(i)[1] > out[1]) {
+                        isMax = false;
+                    }
+                }
+                
+                if (isMax) {
+                    cnt++;
+                    if (out[0] == idx) {
+                        sb.append(cnt + "\n");
+                        break;
+                    }
+                }
+                if (!isMax) {
+                    q.add(out);
+                }
+            }
+            
         }
+        
         System.out.print(sb);
     }
-    
-    static class Docs {
-    private LinkedList<Doc> queue;
-
-    public Docs() {
-        this.queue = new LinkedList<>();
-    }
-
-    public void addDocs(Doc doc) {
-        queue.add(doc);
-    }
-
-    public int doPrint(int m) {
-        int printOrder = 0;
-        while (!queue.isEmpty()) {
-            Doc current = queue.poll();
-
-            boolean hasHigherPriority = queue.stream()
-                       .anyMatch(doc -> doc.getPriority() > current.getPriority());
-
-            if (hasHigherPriority) {
-               queue.addLast(current);
-            } else {
-                printOrder++;
-                if (current.getId() == m) {
-                    break;
-                }
-           }
-       }
-
-       return printOrder;
-    }
-}
-    
-    static class Doc {
-    private int id;
-    private int priority;
-
-    public Doc(int id, int priority) {
-        this.id = id;
-        this.priority = priority;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-}
 }
