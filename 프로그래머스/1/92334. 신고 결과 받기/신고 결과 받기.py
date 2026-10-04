@@ -7,7 +7,7 @@ def solution(id_list, report, k):
     
     reports = {} #피신고자: 신고자들
     reportsCnt = [0 for _ in range(members)]
-    suspend = set() # 정지 ID
+    suspend = set() # 정지 ID _ 중복 안 되게 
     
     for r in report:
         r = r.split()
@@ -38,10 +38,3 @@ def solution(id_list, report, k):
                 emailCnt[i] += 1
     
     return emailCnt
-    
-        
-        
-
-        
-    
-    
